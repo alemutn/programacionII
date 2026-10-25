@@ -1,0 +1,74 @@
+@startuml
+
+title "Patrones Creaacionales - Escuadrones - Composite"
+
+abstract class Unidad {
+    - nombre: string
+    - vida: number
+    - fuerza: number
+
+    + atacar() 
+    + recibirDanio(cantidad: number)
+    + mostrar()
+    + getVida()
+    + getFuerzaAtaque()
+    + getNombre()
+}
+
+class Soldado {
+
+}
+
+class Arquero {
+    + dispararA(u: Unidad)
+}
+
+class Escuadron {
+    - unidades: Unidad[]
+    + atacar() 
+    + recibirDanio(cantidad: number)
+    + mostrar()
+    + getVida()
+    + getFuerzaAtaque()
+    + getNombre()
+}
+
+' Mercenario
+' Cuartel
+
+' relaciones
+Unidad <|..  Soldado
+Unidad <|..  Arquero
+Unidad <|..  Escuadron
+Unidad ..o Escuadron
+
+' notas
+note left of Unidad::mostrar
+    console.log(
+     `${this.getNombre()} (${this.getVida()}, ${this.getFuerzaAtaque()})`
+    )
+end note
+
+note right of Escuadron::atacar
+    console.log(`¡El escuadron ${this.getNombre()} ataca!`)
+    for (const unidad of this.unidades){
+        unidad.atacar();
+    }
+end note
+
+note right of Escuadron::recibirDanio
+    cantidadAAplicar = cantidad / unidades.length
+    for (const unidad of this.unidades){
+        unidad.recibirDanio(cantidadAAplicar)
+    }
+end note
+
+note right of Escuadron::getVida
+    let vidaTotal: number = 0;
+    for (const unidad of this.unidades){
+        vidaTotal += unidad.getVida()
+    }
+    return vidaTotal
+end note
+
+@enduml

@@ -1,0 +1,76 @@
+@startuml
+
+title **Centro Medico**
+
+abstract class UnidadMedica {
+  - nombre: string
+  - direccion: string
+
+  + getNombre()
+  + getDireccion()
+  + getCantidadAmbulancias()
+  + getTiempoMedioAsistencia()
+}
+
+class UnidadAdministrativa {
+  - unidadesMedicas: UnidadMedica[]
+
+  + agregar(um: UnidadMedica)
+  + remover(um: UnidadMedica)
+  + getCantidadAmbulancias()
+  + getTiempoMedioAsistencia()
+}
+class Hospital {
+  - cantidadAmbulancias: number
+  - medicos: Medico[]
+  + getCantidadAmbulancias()
+  + getTiempoMedioAsistencia()
+}
+class UnidadAtencionPrimaria {
+  - medicos: Medico[]
+  + getTiempoMedioAsistencia()
+}
+
+
+' relaciones
+UnidadMedica <|.. UnidadAdministrativa 
+UnidadMedica <|.. UnidadAtencionPrimaria 
+UnidadMedica <|.. Hospital 
+UnidadMedica --o UnidadAdministrativa
+
+
+'notas
+note right of UnidadMedica::getCantidadAmbulancias
+  return 0
+end note
+
+note left of Hospital::getCantidadAmbulancias
+  return this.cantidadAmbulancias
+end note
+
+note left of UnidadAdministrativa::getCantidadAmbulancias
+  let ambulancias = 0;
+  for(const unidad of unidadesMedicas) {
+    ambulancias += unidad.getCantidadAmbulancias()
+  }
+  return ambulancias;
+end note
+
+note as main
+  funtion main {
+    const h = new Hospital(...)
+    const h2 = new Hospital(...)
+    const uap1 = new UnidadAtencionPrimaria(..)
+
+    const ua = new UnidadAdministrativa(....)
+    ua.agregar(h);
+    ua.agregar(h2);
+    ua.agregar(uap);
+
+    console.log("....", ua.getCantidadAmbulancias());
+  }
+end note
+
+main -[hidden]r- UnidadMedica
+
+@enduml
